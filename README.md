@@ -100,4 +100,72 @@ The prediction system is powered by **XGBoost (Extreme Gradient Boosting)**.
 
 ---
 
-# 🏗 System Architecture
+# 🧪 Model Training Process
+
+The machine learning model follows the pipeline below:
+
+1. Data collection from financial APIs
+2. Data preprocessing and cleaning
+3. Feature engineering
+4. Training XGBoost regression model
+5. Evaluation and validation
+6. Deployment into web application
+
+---
+
+# 🔒 Security Features
+
+- Secure authentication system
+- Password encryption
+- Role-based access (Admin / User)
+- Input validation
+- Protected user data storage
+
+---
+
+# 🚀 Future Improvements
+
+This project can be extended with:
+
+- Deep Learning models (LSTM / RNN)
+- Real-time trading signals
+- Mobile application version
+- Portfolio tracking system
+- Live crypto exchange API integration
+- Sentiment analysis using Twitter data
+- Multi-coin forecasting
+
+---
+
+# 🎓 Academic Information
+
+**Degree:** Bachelor of Science in Computer Science  
+**University:** COMSATS University Islamabad  
+**Project Type:** Final Year Project  
+
+---
+
+# 👨‍💻 Authors
+
+**Noshairwan Ali**  
+BS Computer Science  
+COMSATS University Islamabad  
+
+**Ali Imtiaz**  
+BS Computer Science  
+COMSATS University Islamabad  
+
+Supervisor: **Kalim Sattar**
+
+---
+
+# 📜 License
+
+This project is developed for **academic and research purposes**.
+
+---
+
+# ⭐ Support
+
+If you find this project useful, please consider giving it a **star ⭐ on GitHub**.
+
