@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CryptoPredict - Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+
+        .navbar {
+            background-color: #1e1e2f;
+            padding: 15px 0;
+        }
+
+        .container {
+            width: 90%;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            color: #fff;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .nav-links li {
+            display: inline-block;
+            margin-left: 20px;
+        }
+
+        .nav-links a {
+            color: #fff;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #0dcaf0;
+        }
+
+        .welcome-text {
+            color: #0dcaf0;
+            margin-left: 20px;
+            font-size: 16px;
+        }
+
+        .content {
+            padding: 40px;
+            text-align: center;
+        }
+
+        select, button, input[type="date"] {
+            padding: 10px;
+            font-size: 16px;
+            margin: 10px;
+        }
+
+        table {
+            margin: 20px auto;
+            border-collapse: collapse;
+            width: 90%;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+
+        th {
+            background-color: #1e1e2f;
+            color: white;
+        }
+
+        canvas {
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="container">
+        <a href="{{ url_for('main.home') }}" class="brand">CryptoPredict</a>
+        <ul class="nav-links">
+            {% if current_user.is_authenticated %}
+                <li class="welcome-text">Welcome, {{ current_user.username }}!</li>
+                 <li><a href="{{ url_for('main.user_profile') }}">Profile</a></li>
+                <li><a href="{{ url_for('main.prediction') }}">Prediction</a></li>
+                <li><a href="{{ url_for('main.sentiment') }}">Sentiment</a></li>
+                <li><a href="{{ url_for('main.logout') }}">Logout</a></li>
+            {% else %}
+                <li><a href="{{ url_for('main.login') }}">Login</a></li>
+                <li><a href="{{ url_for('main.sentiment') }}">Sentiment</a></li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
+<div class="content">
+    <h2>Crypto Price Prediction</h2>
+    <p>Select a coin and date range to analyze or forecast the market using machine learning.</p>
+
+    <form method="POST">
+        <label>Cryptocurrency:</label>
+        <select name="coin" required>
+            {% for coin in top_coins %}
+                <option value="{{ coin }}" {% if selected_coin == coin %}selected{% endif %}>{{ coin }}</option>
+            {% endfor %}
+        </select><br>
+
+        <label for="start_date">Start Date:</label>
+        <input type="date" name="start_date" value="{{ start_date }}"><br>
+
+        <label for="end_date">End Date:</label>
+        <input type="date" name="end_date" value="{{ end_date }}"><br>
+
+        <button type="submit" name="action" value="analyze">Analyze</button>
+        <button type="submit" name="action" value="predict">Predict</button>
+    </form>
+
+    {% if historical_data %}
+        <h3>Historical Price Data for {{ selected_coin }}</h3>
+        <table id="historicalTable">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Open</th>
+                    <th>High</th>
+                    <th>Low</th>
+                    <th>Close</th>
+                    <th>Volume</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in historical_data %}
+                <tr>
+                    <td>{{ row['Date'] }}</td>
+                    <td>{{ row['Open'] }}</td>
+                    <td>{{ row['High'] }}</td>
+                    <td>{{ row['Low'] }}</td>
+                    <td>{{ row['Close'] }}</td>
+                    <td>{{ row['Volume'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Pagination controls -->
+        {% if historical_data|length > 10 %}
+        <div style="margin-top: 20px;">
+            <button onclick="prevPage()">Previous</button>
+            <span id="pageInfo"></span>
+            <button onclick="nextPage()">Next</button>
+        </div>
+        {% endif %}
+    {% endif %}
+
+    {% if predicted_labels and predicted_values %}
+        <h3>Predicted Prices for Next Day</h3>
+        <table>
+            <tr>
+                <th>Date</th>
+                <th>Predicted Close</th>
+            </tr>
+            {% for date, value in zip(predicted_labels, predicted_values) %}
+            <tr>
+                <td>{{ date }}</td>
+                <td>{{ value }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+
+    {% if historical_data %}
+        <canvas id="priceChart" width="800" height="400"></canvas>
+    {% endif %}
+</div>
+
+<!-- Scripts -->
+{% if historical_data %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Chart rendering
+    const historicalLabels = {{ chart_labels | safe }};
+    const historicalData = {{ chart_values | safe }};
+    const predictedLabels = {{ predicted_labels | safe }};
+    const predictedData = {{ predicted_values | safe }};
+
+    const combinedLabels = historicalLabels.concat(predictedLabels);
+    const padding = Array(historicalLabels.length).fill(null);
+    const fullPredicted = padding.concat(predictedData);
+
+    new Chart(document.getElementById('priceChart'), {
+        type: 'line',
+        data: {
+            labels: combinedLabels,
+            datasets: [
+                {
+                    label: 'Historical Close Price',
+                    data: historicalData,
+                    borderColor: '#0dcaf0',
+                    tension: 0.2,
+                    fill: false
+                },
+                {
+                    label: 'Predicted Close Price (Next Day)',
+                    data: fullPredicted,
+                    borderColor: 'orange',
+                    tension: 0.2,
+                    borderDash: [5, 5],
+                    fill: false
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { position: 'top' }},
+            scales: {
+                x: { title: { display: true, text: 'Date' }},
+                y: { title: { display: true, text: 'Price (USD)' }}
+            }
+        }
+    });
+</script>
+
+<script>
+    // Pagination logic
+    const table = document.getElementById("historicalTable");
+    const rows = table.querySelectorAll("tbody tr");
+    const rowsPerPage = 10;
+    let currentPage = 1;
+
+    function displayPage(page) {
+        const start = (page - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+
+        rows.forEach((row, index) => {
+            row.style.display = index >= start && index < end ? "" : "none";
+        });
+
+        document.getElementById("pageInfo").textContent = `Page ${page} of ${Math.ceil(rows.length / rowsPerPage)}`;
+    }
+
+    function nextPage() {
+        if (currentPage < Math.ceil(rows.length / rowsPerPage)) {
+            currentPage++;
+            displayPage(currentPage);
+        }
+    }
+
+    function prevPage() {
+        if (currentPage > 1) {
+            currentPage--;
+            displayPage(currentPage);
+        }
+    }
+
+    // Init pagination
+    if (rows.length > rowsPerPage) displayPage(currentPage);
+</script>
+{% endif %}
+

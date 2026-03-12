@@ -1,0 +1,8 @@
+C:/Users/chkal/anaconda3/envs/tensorflow-latest/python.exe
+
+# python
+# >>> from app import create_app, db
+# >>> app = create_app()
+# >>> app.app_context().push()
+# >>> db.create_all()
+# >>> exit()

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Profile | Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f4f6f9;
+        }
+
+        .sidebar {
+            height: 100vh;
+            width: 220px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #1e1e2f;
+            color: #fff;
+            padding-top: 20px;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #fff;
+            padding: 12px 20px;
+            text-decoration: none;
+        }
+
+        .sidebar a:hover {
+            background-color: #0dcaf0;
+            color: #000;
+        }
+
+        .main-content {
+            margin-left: 240px;
+            padding: 40px;
+        }
+
+        h1 {
+            color: #1e1e2f;
+        }
+
+        form {
+            background: #fff;
+            padding: 30px;
+            max-width: 500px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0 20px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        input[type="submit"] {
+            background-color: #0dcaf0;
+            color: black;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0bb2d5;
+        }
+
+        .messages {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>Admin Panel</h2>
+        <a href="{{ url_for('main.admin_dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('main.edit_profile') }}">Edit Profile</a>
+        <a href="{{ url_for('main.update_coins') }}">Update Coins</a>
+        <a href="{{ url_for('main.view_users') }}">View Users</a>
+        <a href="{{ url_for('main.logout') }}">Logout</a>
+    </div>
+
+    <div class="main-content">
+        <h1>Change Password</h1>
+
+        <form method="POST">
+            <label>Current Password:</label><br>
+            <input type="password" name="current_password" required>
+
+            <label>New Password:</label><br>
+            <input type="password" name="new_password" required>
+
+            <label>Confirm New Password:</label><br>
+            <input type="password" name="confirm_password" required>
+
+            <input type="submit" value="Update Password">
+        </form>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+    </div>
+
+</body>
+</html>

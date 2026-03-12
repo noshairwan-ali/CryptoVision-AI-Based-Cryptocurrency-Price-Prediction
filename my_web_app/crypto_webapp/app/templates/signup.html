@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign Up | CryptoPredict</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-image: url('{{ url_for("static", filename="images/signup-bg.jpg") }}');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .signup-card {
+            background-color: rgba(255, 255, 255, 0.96);
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .signup-card h2 {
+            margin-bottom: 25px;
+            color: #1e1e2f;
+        }
+
+        .signup-card form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .signup-card label {
+            margin: 10px 0 5px;
+            text-align: left;
+            font-weight: 500;
+        }
+
+        .signup-card input[type="text"],
+        .signup-card input[type="email"],
+        .signup-card input[type="password"] {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .signup-card input[type="submit"] {
+            background-color: #0dcaf0;
+            border: none;
+            color: black;
+            padding: 12px;
+            margin-top: 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .signup-card input[type="submit"]:hover {
+            background-color: #09b1d1;
+        }
+
+        .login-link {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .login-link a {
+            color: #0dcaf0;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-card">
+        <h2>Create Your CryptoPredict Account</h2>
+        <form method="POST">
+            {{ form.hidden_tag() }}
+
+            <label for="username">{{ form.username.label }}</label>
+            {{ form.username(size=32) }}
+
+            <label for="email">{{ form.email.label }}</label>
+            {{ form.email(size=32) }}
+
+            <label for="password">{{ form.password.label }}</label>
+            {{ form.password(size=32) }}
+
+            <label for="confirm_password">{{ form.confirm_password.label }}</label>
+            {{ form.confirm_password(size=32) }}
+
+            {{ form.submit() }}
+        </form>
+        <div class="login-link">
+            Already registered? <a href="{{ url_for('main.login') }}">Login here</a>
+        </div>
+    </div>
+
+    <!-- Popup for Flash Messages -->
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <script>
+                alert("{{ messages[0] }}");
+            </script>
+        {% endif %}
+    {% endwith %}
+</body>
+</html>

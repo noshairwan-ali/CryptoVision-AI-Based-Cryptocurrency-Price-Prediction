@@ -1,0 +1,130 @@
+<head>
+    <meta charset="UTF-8">
+    <title>CryptoPredict - Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+
+        .navbar {
+            background-color: #1e1e2f;
+            padding: 15px 0;
+        }
+
+        .container {
+            width: 90%;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            color: #fff;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .nav-links li {
+            display: inline-block;
+            margin-left: 20px;
+        }
+
+        .nav-links a {
+            color: #fff;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #0dcaf0;
+        }
+
+        .welcome-text {
+            color: #0dcaf0;
+            margin-left: 20px;
+            font-size: 16px;
+        }
+
+        .content {
+            padding: 40px;
+            text-align: center;
+        }
+
+        select, button {
+            padding: 10px;
+            font-size: 16px;
+            margin: 10px;
+        }
+
+        table {
+            margin: 20px auto;
+            border-collapse: collapse;
+            width: 90%;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+
+        th {
+            background-color: #1e1e2f;
+            color: white;
+        }
+
+        canvas {
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="{{ url_for('main.home') }}" class="brand">CryptoPredict</a>
+            <ul class="nav-links">
+                {% if current_user.is_authenticated %}
+                    <li class="welcome-text">Welcome, {{ current_user.username }}!</li>
+                     <li><a href="{{ url_for('main.user_profile') }}">Profile</a></li>
+                    <li><a href="{{ url_for('main.prediction') }}">Prediction</a></li>
+                    <li><a href="{{ url_for('main.sentiment') }}">Sentiment</a></li>
+                    <li><a href="{{ url_for('main.logout') }}">Logout</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('main.login') }}">Login</a></li>
+                    <li><a href="{{ url_for('main.sentiment') }}">Sentiment</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+
+<form method="POST">
+    <label for="coin">Choose a cryptocurrency:</label>
+    <select name="coin" required>
+        {% for c in currencies %}
+            <option value="{{ c }}">{{ c }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Analyze</button>
+</form>
+
+{% if error %}
+    <p style="color: red;"><strong>{{ error }}</strong></p>
+{% endif %}
+
+{% if results %}
+    <h3>Sentiment Results:</h3>
+    {% for r in results %}
+        <div class="tweet">
+            <p>{{ r.text }}</p>
+            <p><strong>{{ r.type }}</strong> ({{ "%.2f"|format(r.score) }})</p>
+            <hr>
+        </div>
+    {% endfor %}
+{% endif %}

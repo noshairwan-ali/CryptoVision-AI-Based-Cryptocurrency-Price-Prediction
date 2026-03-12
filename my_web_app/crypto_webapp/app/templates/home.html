@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><a href="{{ url_for('main.home') }}" class="brand">CryptoPredict</a>
+    </title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* Carousel Styles */
+        .carousel {
+            position: relative;
+            height: 70vh;
+            overflow: hidden;
+        }
+        .carousel-slide {
+            display: none;
+            height: 100%;
+            width: 100%;
+            background-size: cover;
+            background-position: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: opacity 1s ease-in-out;
+        }
+        .carousel-slide.active {
+            display: block;
+            z-index: 1;
+        }
+
+        /* Message Section Below Banner */
+        .hero-text-section {
+            background-color: #f5f5f5;
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .hero-text-section h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+        .hero-text-section p {
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+        .btn {
+            background-color: #0dcaf0;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            color: black;
+            font-weight: bold;
+            font-size: 16px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+        .btn:hover {
+            background-color: #09b1d1;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: #1e1e2f;
+            padding: 15px 0;
+        }
+
+        .container {
+            width: 90%;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            color: #fff;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .nav-links li {
+            display: inline-block;
+            margin-left: 20px;
+        }
+
+        .nav-links a {
+            color: #fff;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #0dcaf0;
+        }
+
+        .welcome-text {
+            color: #0dcaf0;
+            margin-left: 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="brand">CryptoPredict</div>
+            <ul class="nav-links">
+                {% if current_user.is_authenticated %}
+                    <li class="welcome-text">Welcome, {{ current_user.username }}!</li>
+                    <li><a href="{{ url_for('main.user_profile') }}">Profile</a></li>
+                    <li><a href="{{ url_for('main.prediction')}}">Prediction</a></li>
+                    <li><a href="{{ url_for('main.sentiment') }}">Sentiment</a></li>
+                    <li><a href="{{ url_for('main.logout') }}">Logout</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('main.login') }}">Login</a></li>
+                    <!-- <li><a href="{{ url_for('main.sentiment') }}">Sentiment</a></li> -->
+                {% endif %}
+             </ul>
+
+        </div>
+    </nav>
+
+    <!-- Image Carousel -->
+    <div class="carousel">
+        <div class="carousel-slide active" style="background-image: url('{{ url_for('static', filename='images/banner1.jpg') }}');"></div>
+        <div class="carousel-slide" style="background-image: url('{{ url_for('static', filename='images/banner2.webp') }}');"></div>
+        <div class="carousel-slide" style="background-image: url('{{ url_for('static', filename='images/banner3.webp') }}');"></div>
+    </div>
+
+    <!-- Text Section Below Banner -->
+    <div class="hero-text-section">
+        <h1>Forecast Tomorrow's Crypto Today</h1>
+        <p>Get accurate predictions and insights for your crypto investments.</p>
+       {% if current_user.is_authenticated %}
+            <a href="#" class="btn">Get Started</a>
+        {% else %}
+            <a href="{{ url_for('main.login') }}" class="btn">Get Started</a>
+         {% endif %}
+
+    </div>
+
+    <!-- Carousel Script -->
+    <script>
+        const slides = document.querySelectorAll('.carousel-slide');
+        let currentSlide = 0;
+
+        setInterval(() => {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }, 5000);
+    </script>
+
+</body>
+</html>

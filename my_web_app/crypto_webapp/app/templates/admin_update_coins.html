@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Coins | Admin Panel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f4f6f9;
+        }
+
+        .sidebar {
+            height: 100vh;
+            width: 220px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #1e1e2f;
+            color: #fff;
+            padding-top: 20px;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #fff;
+            padding: 12px 20px;
+            text-decoration: none;
+        }
+
+        .sidebar a:hover {
+            background-color: #0dcaf0;
+            color: #000;
+        }
+
+        .main-content {
+            margin-left: 240px;
+            padding: 30px;
+        }
+
+        h1 {
+            color: #1e1e2f;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+
+        form.inline {
+            display: inline;
+        }
+
+        input[type="text"] {
+            padding: 6px;
+            margin-top: 10px;
+            width: 250px;
+        }
+
+        input[type="submit"] {
+            padding: 6px 16px;
+            margin-left: 10px;
+            background-color: #0dcaf0;
+            border: none;
+            color: #000;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>Admin Panel</h2>
+        <a href="{{ url_for('main.admin_dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('main.edit_profile') }}">Edit Profile</a>
+        <a href="{{ url_for('main.update_coins') }}">Update Coins</a>
+        <a href="{{ url_for('main.view_users') }}">View All Users</a>
+        <a href="{{ url_for('main.logout') }}">Logout</a>
+    </div>
+
+    <!-- Main -->
+    <div class="main-content">
+        <h1>Update Coins</h1>
+
+       <form method="POST">
+    <input type="text" name="coin_name" placeholder="Enter coin name..." required>
+    <input type="text" name="coin_id" placeholder="Enter coin ID (e.g., BTC-USD)" required>
+    <input type="submit" value="Add Coin">
+</form>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul>
+                    {% for msg in messages %}
+                        <li>{{ msg }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        <table>
+            <thead>
+                <tr><th>ID</th><th>Name</th><th>Action</th></tr>
+            </thead>
+            <tbody>
+                {% for coin in coins %}
+                <tr>
+                    <td>{{ coin.id }}</td>
+                    <td>{{ coin.name }}</td>
+                    <td>
+                        <form method="POST" action="{{ url_for('main.delete_coin', coin_id=coin.id) }}" class="inline">
+                            <input type="submit" value="Delete">
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>
