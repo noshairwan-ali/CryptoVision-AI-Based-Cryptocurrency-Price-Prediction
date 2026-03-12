@@ -151,12 +151,6 @@ This project can be extended with:
 BS Computer Science  
 COMSATS University Islamabad  
 
-**Ali Imtiaz**  
-BS Computer Science  
-COMSATS University Islamabad  
-
-Supervisor: **Kalim Sattar**
-
 ---
 
 # 📜 License
